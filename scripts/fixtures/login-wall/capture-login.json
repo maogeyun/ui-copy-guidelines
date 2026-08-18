@@ -1,0 +1,23 @@
+{
+  "pageUrl": "https://ifpmim.nbcb.com.cn/fips/user/login",
+  "loginBlocked": false,
+  "pageKind": "app",
+  "states": [
+    {
+      "id": "default",
+      "label": "默认",
+      "src": "default.png",
+      "imageSize": { "width": 1440, "height": 900 },
+      "items": [
+        { "original": "你好, 欢迎来到", "component": "文本", "bbox_px": [100, 100, 200, 24] },
+        { "original": "产业基金和项目管理系统", "component": "文本", "bbox_px": [100, 140, 280, 24] },
+        { "original": "密码登录", "component": "文本", "bbox_px": [100, 200, 80, 24] },
+        { "original": "短信登录", "component": "文本", "bbox_px": [200, 200, 80, 24] },
+        { "original": "用户名", "component": "占位", "bbox_px": [100, 260, 200, 32] },
+        { "original": "密码", "component": "占位", "bbox_px": [100, 310, 200, 32] },
+        { "original": "登 录", "component": "按钮", "bbox_px": [100, 370, 120, 36] },
+        { "original": "忘记密码", "component": "按钮", "bbox_px": [100, 420, 80, 24] }
+      ]
+    }
+  ]
+}
