@@ -1,0 +1,27 @@
+{
+  "pageUrl": "https://ifpmim.nbcb.com.cn/fips/user/login",
+  "loginBlocked": false,
+  "pageKind": "app",
+  "states": [
+    {
+      "id": "default",
+      "label": "默认 · 自管基金列表",
+      "src": "default.png",
+      "imageSize": { "width": 1440, "height": 900 },
+      "items": [
+        { "original": "首页", "component": "菜单项", "bbox_px": [40, 0, 52, 50] },
+        { "original": "流程中心", "component": "菜单项", "bbox_px": [100, 0, 80, 50] },
+        { "original": "基金管理", "component": "菜单项", "bbox_px": [200, 0, 80, 40] },
+        { "original": "自管基金", "component": "文本", "bbox_px": [60, 60, 80, 20] },
+        { "original": "请输入基金全称", "component": "占位", "bbox_px": [100, 120, 160, 32] },
+        { "original": "查询", "component": "按钮", "bbox_px": [400, 120, 64, 32] },
+        { "original": "新增", "component": "按钮", "bbox_px": [100, 180, 64, 32] },
+        { "original": "导入", "component": "按钮", "bbox_px": [180, 180, 64, 32] },
+        { "original": "导出", "component": "按钮", "bbox_px": [260, 180, 64, 32] },
+        { "original": "基金全称", "component": "文本", "bbox_px": [100, 240, 80, 24] },
+        { "original": "共 157 条", "component": "文本", "bbox_px": [100, 800, 80, 24] },
+        { "original": "20 条/页", "component": "文本", "bbox_px": [400, 800, 80, 24] }
+      ]
+    }
+  ]
+}

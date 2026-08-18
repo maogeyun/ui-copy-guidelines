@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>界面文案检查报告</title>
+  <style>
+    :root {
+      --radius: 0.625rem;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --accent: oklch(0.97 0 0);
+      --accent-foreground: oklch(0.205 0 0);
+      --destructive: oklch(0.577 0.245 27.325);
+      --border: oklch(0.922 0 0);
+      --input: oklch(0.922 0 0);
+      --ring: oklch(0.708 0 0);
+      --chart-2: oklch(0.6 0.118 184.704);
+      --chart-4: oklch(0.828 0.189 84.429);
+      --sidebar: oklch(0.985 0 0);
+      --success: oklch(0.55 0.12 164);
+      --warning: oklch(0.75 0.14 75);
+      --radius-sm: calc(var(--radius) * 0.6);
+      --radius-md: calc(var(--radius) * 0.8);
+      --radius-lg: var(--radius);
+      --radius-xl: calc(var(--radius) * 1.4);
+    }
+    html.dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+      --chart-2: oklch(0.696 0.17 162.48);
+      --chart-4: oklch(0.627 0.265 303.9);
+      --sidebar: oklch(0.205 0 0);
+      --success: oklch(0.72 0.13 164);
+      --warning: oklch(0.8 0.14 75);
+    }
+    * { box-sizing: border-box; border-color: var(--border); }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: ui-sans-serif, system-ui, "PingFang SC", "Noto Sans SC", sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: inherit; }
+    .page { max-width: 1360px; margin: 0 auto; padding: 24px 20px 64px; }
+    .header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; margin-bottom: 24px;
+    }
+    .header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 8px; }
+    .meta { color: var(--muted-foreground); font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+    .meta a { color: inherit; text-underline-offset: 2px; word-break: break-all; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+      border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--border);
+      background: var(--secondary); color: var(--secondary-foreground);
+    }
+    .badge-pass { background: color-mix(in oklch, var(--success) 16%, var(--card)); color: var(--success); border-color: color-mix(in oklch, var(--success) 35%, var(--border)); }
+    .badge-critical { background: color-mix(in oklch, var(--destructive) 14%, var(--card)); color: var(--destructive); border-color: color-mix(in oklch, var(--destructive) 35%, var(--border)); }
+    .badge-major { background: color-mix(in oklch, var(--warning) 18%, var(--card)); color: oklch(0.55 0.12 55); border-color: color-mix(in oklch, var(--warning) 40%, var(--border)); }
+    html.dark .badge-major { color: var(--warning); }
+    .badge-minor { background: var(--muted); color: var(--muted-foreground); }
+    .badge-unread { background: transparent; color: var(--muted-foreground); border-style: dashed; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--card); color: var(--foreground);
+      display: grid; place-items: center;
+    }
+    .icon-btn:hover { background: var(--accent); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .card {
+      background: var(--card); color: var(--card-foreground);
+      border: 1px solid var(--border); border-radius: var(--radius-xl);
+      box-shadow: 0 1px 2px oklch(0.145 0 0 / 4%);
+    }
+    .stat { padding: 16px 18px; }
+    .stat .k { font-size: 12px; color: var(--muted-foreground); margin-bottom: 6px; }
+    .stat .v { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; }
+    .stat.critical .v { color: var(--destructive); }
+    .stat.issue .v { color: oklch(0.55 0.12 55); }
+    html.dark .stat.issue .v { color: var(--warning); }
+    .stat.pass .v { color: var(--success); }
+    .tabs {
+      display: inline-flex; padding: 3px; gap: 2px; background: var(--muted);
+      border-radius: var(--radius-md); margin-bottom: 12px;
+    }
+    .tabs button {
+      border: 0; background: transparent; color: var(--muted-foreground);
+      height: 28px; padding: 0 10px; border-radius: calc(var(--radius-md) - 2px); font-size: 13px;
+    }
+    .tabs button[aria-selected="true"] { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px oklch(0.145 0 0 / 6%); }
+    .main {
+      display: grid;
+      grid-template-columns: minmax(260px, 36%) minmax(220px, 28%) minmax(280px, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+    .shot-card, .list-card, .detail {
+      position: sticky; top: 12px;
+      max-height: min(78vh, 840px);
+      display: flex; flex-direction: column;
+      min-height: 0;
+    }
+    .shot-card { padding: 12px; }
+    body.layout-web .page { max-width: min(1440px, calc(100vw - 40px)); }
+    body.layout-web .main {
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr);
+      grid-template-rows: minmax(0, 58%) minmax(0, 1fr);
+      height: calc(100dvh - 220px);
+      max-height: calc(100dvh - 220px);
+      min-height: 420px;
+      overflow: hidden;
+      align-items: stretch;
+    }
+    body.layout-web .shot-card,
+    body.layout-web .list-card,
+    body.layout-web .detail {
+      position: static;
+      top: auto;
+      max-height: none;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.layout-web .shot-card {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+    body.layout-web .list-card { grid-column: 1; grid-row: 2; }
+    body.layout-web .detail { grid-column: 2; grid-row: 2; }
+    .shot-scroll { flex: 1; min-height: 0; overflow: auto; border-radius: var(--radius-lg); background: var(--muted); }
+    .shot-stage { position: relative; display: block; width: 100%; line-height: 0; }
+    .shot-stage img { display: block; width: 100%; height: auto; }
+    .shot-overlay {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+      display: block; overflow: visible; pointer-events: none;
+    }
+    .shot-overlay .hit { pointer-events: all; cursor: pointer; fill: transparent; }
+    .shot-overlay .frame { fill: oklch(1 0 0 / 6%); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .shot-overlay .frame.pass { stroke: var(--success); fill: color-mix(in oklch, var(--success) 10%, transparent); }
+    .shot-overlay .frame.critical { stroke: var(--destructive); fill: color-mix(in oklch, var(--destructive) 12%, transparent); }
+    .shot-overlay .frame.major { stroke: var(--warning); fill: color-mix(in oklch, var(--warning) 12%, transparent); }
+    .shot-overlay .frame.minor { stroke: var(--muted-foreground); fill: oklch(1 0 0 / 4%); }
+    .shot-overlay .frame.unreadable { stroke: var(--muted-foreground); stroke-dasharray: 4 3; fill: transparent; }
+    .shot-overlay .mark.active .frame { stroke-width: 3; filter: drop-shadow(0 0 3px var(--ring)); }
+    .shot-overlay .badge { pointer-events: none; }
+    .shot-overlay .badge-bg { fill: var(--primary); }
+    .shot-overlay .badge-bg.pass { fill: var(--success); }
+    .shot-overlay .badge-bg.critical { fill: var(--destructive); }
+    .shot-overlay .badge-bg.major { fill: var(--warning); }
+    .shot-overlay .badge-bg.minor, .shot-overlay .badge-bg.unreadable { fill: var(--muted-foreground); }
+    .shot-overlay .badge-fg { fill: #fff; }
+    .shot-overlay .badge-fg.major { fill: #3f2a00; }
+    .shot-empty {
+      min-height: 200px; display: grid; place-items: center;
+      color: var(--muted-foreground); font-size: 13px; line-height: 1.5;
+    }
+    .list-card { padding: 12px; min-height: 0; }
+    .list-card .tabs {
+      flex-shrink: 0;
+      display: flex;
+      width: 100%;
+      align-self: stretch;
+      box-sizing: border-box;
+    }
+    .list-card .tabs button {
+      flex: 1;
+      min-width: 0;
+      padding: 0 8px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .list-card .tabs button:hover:not([aria-selected="true"]) {
+      color: var(--foreground);
+      background: color-mix(in oklch, var(--background) 70%, transparent);
+    }
+    .list-card .tabs button[aria-selected="true"] {
+      font-weight: 600;
+    }
+    .list-scroll { flex: 1; min-height: 0; overflow: auto; padding: 4px; }
+    .item {
+      width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
+      text-align: left; border: 1px solid transparent;
+      background: transparent; color: inherit; border-radius: var(--radius-md);
+      padding: 10px 12px; display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) max-content;
+      gap: 8px; align-items: start;
+    }
+    .item:hover { background: var(--muted); }
+    .item.active {
+      background: var(--accent); border-color: var(--border);
+      box-shadow: inset 0 0 0 2px color-mix(in oklch, var(--ring) 35%, transparent);
+    }
+    .item .id { font-weight: 600; color: var(--muted-foreground); padding-top: 1px; }
+    .item .orig { font-weight: 500; min-width: 0; }
+    .item .sub { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .detail { padding: 16px 16px 18px; }
+    .detail h2 { font-size: 14px; margin: 0 0 12px; font-weight: 600; }
+    .detail-body { flex: 1; min-height: 0; overflow: auto; }
+    .detail-placeholder {
+      flex: 1; display: grid; place-items: center; text-align: center;
+      color: var(--muted-foreground); padding: 24px; font-size: 13px;
+    }
+    .kv { display: grid; grid-template-columns: 88px 1fr; gap: 8px 12px; font-size: 13px; }
+    .kv dt { color: var(--muted-foreground); }
+    .kv dd { margin: 0; }
+    .quote {
+      margin: 0; padding: 8px 10px; background: var(--muted); border-radius: var(--radius-md);
+      color: var(--foreground);
+    }
+    .rewrite { margin-top: 16px; padding: 16px 18px; }
+    .rewrite h2 { font-size: 14px; margin: 0 0 12px; font-weight: 600; }
+    .rw { display: grid; grid-template-columns: 28px 1fr 16px 1fr; gap: 8px; align-items: start; padding: 8px 0; border-top: 1px solid var(--border); }
+    .rw:first-of-type { border-top: 0; }
+    .from { color: var(--muted-foreground); text-decoration: line-through; text-decoration-color: color-mix(in oklch, var(--destructive) 50%, transparent); }
+    .to { font-weight: 500; }
+    .arrow { color: var(--muted-foreground); text-align: center; }
+    .empty { color: var(--muted-foreground); padding: 24px; text-align: center; }
+    @media (max-width: 1100px) {
+      .main { grid-template-columns: minmax(260px, 42%) 1fr; }
+      .shot-card { grid-row: 1 / span 2; max-height: min(78vh, 840px); }
+      .list-card { max-height: min(42vh, 420px); position: static; }
+      .detail { grid-column: 2; max-height: min(36vh, 380px); position: static; }
+      body.layout-web .main {
+        grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+        grid-template-rows: minmax(0, 58%) minmax(0, 1fr);
+        height: calc(100dvh - 220px);
+        max-height: calc(100dvh - 220px);
+        overflow: hidden;
+      }
+      body.layout-web .shot-card {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        position: static;
+        max-height: none;
+        height: 100%;
+      }
+      body.layout-web .list-card,
+      body.layout-web .detail {
+        grid-column: auto;
+        grid-row: 2;
+        position: static;
+        max-height: none;
+        height: 100%;
+      }
+    }
+    @media (max-width: 880px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .main { grid-template-columns: 1fr; }
+      .shot-card, .list-card, .detail { position: static; max-height: none; }
+      .list-card { max-height: min(42vh, 420px); }
+      body.layout-web .main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 45vh) minmax(0, 32vh) minmax(0, 1fr);
+        height: auto;
+        max-height: none;
+        min-height: 0;
+        overflow: visible;
+      }
+      body.layout-web .shot-card,
+      body.layout-web .list-card,
+      body.layout-web .detail {
+        position: static;
+        grid-column: 1;
+        grid-row: auto;
+        height: auto;
+        max-height: none;
+        overflow: hidden;
+      }
+      body.layout-web .shot-card { max-height: 45vh; }
+      body.layout-web .list-card { max-height: 32vh; }
+      body.layout-web .detail { max-height: 36vh; }
+      .rw { grid-template-columns: 28px 1fr; }
+      .arrow, .to { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <h1 id="title">界面文案检查报告</h1>
+        <div class="meta" id="meta"></div>
+      </div>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式" title="切换深色模式">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </header>
+    <section class="stats" id="stats"></section>
+    <div class="tabs" id="shotTabs" hidden></div>
+    <div class="main">
+      <section class="card shot-card">
+        <div class="shot-scroll" id="shotScroll">
+          <div class="shot-stage" id="shotStage"></div>
+        </div>
+      </section>
+      <section class="card list-card">
+        <div class="tabs" id="filters" role="tablist"></div>
+        <div class="list-scroll" id="list"></div>
+      </section>
+      <section class="card detail" id="detail">
+        <div class="detail-placeholder">点击左侧编号或条目，在此对照查看检查详情</div>
+      </section>
+    </div>
+    <section class="card rewrite" id="rewrite"></section>
+  </div>
+  <script type="application/json" id="report-data">
+  {
+    "title": "界面文案检查报告",
+    "generatedAt": "",
+    "productLine": "corporate",
+    "persona": "",
+    "address": "您",
+    "pageUrl": "",
+    "screenshotSrc": "",
+    "imageSize": { "width": 0, "height": 0 },
+    "screenshots": [],
+    "summary": { "total": 0, "pass": 0, "issue": 0, "critical": 0 },
+    "items": []
+  }
+  </script>
+  <script>
+    const data = JSON.parse(document.getElementById("report-data").textContent);
+    const lineLabel = data.productLine === "personal" ? "个人" : "对公";
+    const shots = (data.screenshots && data.screenshots.length)
+      ? data.screenshots
+      : [{ id: "default", src: data.screenshotSrc || "", label: "截图", imageSize: data.imageSize || {} }];
+    let shotId = shots[0].id;
+    let filter = "all";
+    let activeId = null;
+    const isWebLayout = Boolean(data.pageUrl) || shots.some((sh) => (sh.imageSize && sh.imageSize.width >= 900))
+      || ((data.imageSize && data.imageSize.width >= 900));
+    if (isWebLayout) document.body.classList.add("layout-web");
+
+    function boxClass(item) {
+      if (item.status === "pass") return "pass";
+      if (item.status === "unreadable") return "unreadable";
+      return item.severity || "major";
+    }
+    function badgeClass(item) {
+      if (item.status === "pass") return "badge-pass";
+      if (item.status === "unreadable") return "badge-unread";
+      return "badge-" + (item.severity || "major");
+    }
+    function badgeText(item) {
+      if (item.status === "pass") return "通过";
+      if (item.status === "unreadable") return "看不清";
+      return { critical: "严重", major: "一般", minor: "建议" }[item.severity] || "需优化";
+    }
+    function itemsForShot() {
+      return (data.items || []).filter((it) => !it.screenshotId || it.screenshotId === shotId);
+    }
+    function visibleItems() {
+      const list = itemsForShot();
+      if (filter === "issue") return list.filter((it) => it.status === "issue");
+      if (filter === "pass") return list.filter((it) => it.status === "pass");
+      return list;
+    }
+
+    document.getElementById("title").textContent = data.title || "界面文案检查报告";
+    document.title = data.title || "界面文案检查报告";
+    document.getElementById("meta").innerHTML = [
+      `<span class="badge">${lineLabel}</span>`,
+      data.persona ? `<span>${data.persona}</span>` : "",
+      data.address ? `<span>称谓 ${data.address}</span>` : "",
+      data.generatedAt ? `<span>${data.generatedAt}</span>` : "",
+      data.pageUrl ? `<a href="${escapeHtml(data.pageUrl)}" target="_blank" rel="noopener">${escapeHtml(data.pageUrl)}</a>` : ""
+    ].filter(Boolean).join("");
+
+    const s = data.summary || {};
+    document.getElementById("stats").innerHTML = [
+      ["文案条数", s.total ?? (data.items || []).length, ""],
+      ["通过", s.pass ?? 0, "pass"],
+      ["需优化", s.issue ?? 0, "issue"],
+      ["严重", s.critical ?? 0, "critical"]
+    ].map(([k, v, c]) => `<div class="card stat ${c}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+
+    const shotTabs = document.getElementById("shotTabs");
+    if (shots.length > 1 || data.pageUrl) {
+      shotTabs.hidden = false;
+      shotTabs.innerHTML = shots.map((sh) =>
+        `<button type="button" data-shot="${sh.id}" aria-selected="${sh.id === shotId}">${sh.label || sh.id}</button>`
+      ).join("");
+      shotTabs.onclick = (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        shotId = btn.dataset.shot;
+        activeId = null;
+        [...shotTabs.querySelectorAll("button")].forEach((b) => b.setAttribute("aria-selected", b === btn));
+        renderShot(); renderList(); renderDetail();
+      };
+    }
+
+    document.getElementById("filters").innerHTML = [
+      ["all", "全部"], ["issue", "需优化"], ["pass", "通过"]
+    ].map(([id, label]) => `<button type="button" data-filter="${id}" aria-selected="${id === "all"}">${label}</button>`).join("");
+    document.getElementById("filters").onclick = (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      filter = btn.dataset.filter;
+      [...e.currentTarget.querySelectorAll("button")].forEach((b) => b.setAttribute("aria-selected", b === btn));
+      paintOverlay(); renderList();
+    };
+
+    function scrollChildInto(container, child) {
+      if (!container || !child) return;
+      const c = container.getBoundingClientRect();
+      const r = child.getBoundingClientRect();
+      if (r.top < c.top) container.scrollTop -= (c.top - r.top) + 8;
+      else if (r.bottom > c.bottom) container.scrollTop += (r.bottom - c.bottom) + 8;
+    }
+
+    function selectItem(id) {
+      activeId = id;
+      renderList(); renderDetail(); paintOverlay();
+      const el = document.querySelector(`.mark[data-id="${id}"]`);
+      scrollChildInto(document.getElementById("shotScroll"), el);
+    }
+
+    function imageMetrics(img, shot) {
+      const nw = img.naturalWidth || (shot.imageSize && shot.imageSize.width) || 0;
+      const nh = img.naturalHeight || (shot.imageSize && shot.imageSize.height) || 0;
+      // bbox_px 属于抽取时的坐标系；naturalWidth/Height 属于 PNG 像素。
+      // Retina / DPR 截图常是 2× 像素，二者不能直接混用。
+      const cw = Number(shot.imageSize && shot.imageSize.width) || nw;
+      const ch = Number(shot.imageSize && shot.imageSize.height) || nh;
+      return {
+        nw,
+        nh,
+        sx: cw > 0 ? nw / cw : 1,
+        sy: ch > 0 ? nh / ch : 1
+      };
+    }
+
+    function toPx(item, nw, nh, sx = 1, sy = 1) {
+      if (Array.isArray(item.bbox_px) && item.bbox_px.length === 4) {
+        const [x, y, w, h] = item.bbox_px.map(Number);
+        return [x * sx, y * sy, w * sx, h * sy];
+      }
+      const [l, t, w, h] = item.bbox || [0, 0, 0, 0];
+      return [l / 100 * nw, t / 100 * nh, w / 100 * nw, h / 100 * nh];
+    }
+
+    function paintOverlay() {
+      const svg = document.getElementById("shotOverlay");
+      const img = document.getElementById("shotImg");
+      if (!svg || !img) return;
+      const shot = shots.find((sh) => sh.id === shotId) || shots[0];
+      const { nw, nh, sx, sy } = imageMetrics(img, shot);
+      if (!nw || !nh) return;
+      svg.setAttribute("viewBox", `0 0 ${nw} ${nh}`);
+      const r = Math.max(10, Math.min(22, nw * 0.036));
+      const vis = new Set(visibleItems().map((it) => String(it.id)));
+      svg.innerHTML = itemsForShot().map((it) => {
+        const [x, y, w, h] = toPx(it, nw, nh, sx, sy);
+        if (!(w > 0 && h > 0)) return "";
+        const kind = boxClass(it);
+        const active = String(it.id) === String(activeId) ? " active" : "";
+        const dim = vis.size && !vis.has(String(it.id)) ? "opacity:0.18" : "";
+        const cx = Math.max(r, x);
+        const cy = Math.max(r, y);
+        return `<g class="mark${active}" data-id="${it.id}" style="${dim}">
+          <rect class="frame ${kind}" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" />
+          <rect class="hit" data-id="${it.id}" x="${x}" y="${y}" width="${w}" height="${h}" />
+          <g class="badge">
+            <circle class="badge-bg ${kind}" cx="${cx}" cy="${cy}" r="${r}" />
+            <text class="badge-fg ${kind}" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
+              font-size="${r * 0.95}" font-weight="600" font-family="ui-sans-serif,system-ui,sans-serif">${it.id}</text>
+          </g>
+        </g>`;
+      }).join("");
+      svg.querySelectorAll(".hit").forEach((n) => {
+        n.addEventListener("click", () => selectItem(Number(n.dataset.id)));
+      });
+    }
+
+    function renderShot() {
+      const shot = shots.find((sh) => sh.id === shotId) || shots[0];
+      const stage = document.getElementById("shotStage");
+      if (!shot.src) {
+        stage.innerHTML = `<div class="shot-empty">未提供截图</div>`;
+        return;
+      }
+      stage.innerHTML = `<img id="shotImg" alt="界面截图" src="${shot.src}" />
+        <svg class="shot-overlay" id="shotOverlay" preserveAspectRatio="none"></svg>`;
+      const img = document.getElementById("shotImg");
+      const draw = () => paintOverlay();
+      if (img.complete && img.naturalWidth) draw();
+      else img.addEventListener("load", draw, { once: true });
+      img.addEventListener("error", () => {
+        stage.innerHTML = `<div class="shot-empty">截图无法加载：请用 scripts/build_report.mjs 内嵌截图（data URI），勿只写相对路径 default.png</div>`;
+      }, { once: true });
+    }
+
+    function renderList() {
+      const list = visibleItems();
+      const root = document.getElementById("list");
+      if (!list.length) {
+        const empty = itemsForShot().length
+          ? "没有符合筛选的文案"
+          : "本状态无抽取文案";
+        root.innerHTML = `<div class="empty">${empty}</div>`;
+        return;
+      }
+      root.innerHTML = list.map((it) => `
+        <button type="button" class="item ${String(it.id) === String(activeId) ? "active" : ""}" data-id="${it.id}">
+          <span class="id">${it.id}</span>
+          <span>
+            <div class="orig">${escapeHtml(it.original || "（看不清）")}</div>
+            <div class="sub">${escapeHtml([it.region, it.component].filter(Boolean).join(" · "))}</div>
+          </span>
+          <span class="badge ${badgeClass(it)}">${badgeText(it)}</span>
+        </button>`).join("");
+      root.querySelectorAll(".item").forEach((el) => {
+        el.onclick = () => selectItem(Number(el.dataset.id));
+      });
+      const cur = root.querySelector(`.item.active`);
+      scrollChildInto(root, cur);
+    }
+
+    function renderDetail() {
+      const el = document.getElementById("detail");
+      const it = (data.items || []).find((x) => String(x.id) === String(activeId));
+      if (!it) {
+        el.innerHTML = `<div class="detail-placeholder">点击图上编号或中间条目，在此对照查看检查详情</div>`;
+        return;
+      }
+      const issue = it.status === "issue";
+      el.innerHTML = `<h2>#${it.id} ${escapeHtml(it.original || "（看不清）")}</h2>
+        <div class="detail-body"><dl class="kv">
+          <dt>组件</dt><dd>${escapeHtml(it.component || "—")} · ${escapeHtml(it.region || "—")}</dd>
+          <dt>结论</dt><dd><span class="badge ${badgeClass(it)}">${badgeText(it)}</span></dd>
+          ${it.problem ? `<dt>问题</dt><dd>${escapeHtml(it.problem)}</dd>` : ""}
+          <dt>依据</dt><dd>${escapeHtml(it.rule || "—")}</dd>
+          ${it.ruleQuote ? `<dt>规范要点</dt><dd><p class="quote">${escapeHtml(it.ruleQuote)}</p></dd>` : ""}
+          ${issue && it.why ? `<dt>为何违规</dt><dd>${escapeHtml(it.why)}</dd>` : ""}
+          ${issue && it.suggested ? `<dt>优化方案</dt><dd><strong>${escapeHtml(it.suggested)}</strong></dd>` : ""}
+          ${issue && it.how ? `<dt>优化理由</dt><dd>${escapeHtml(it.how)}</dd>` : ""}
+        </dl></div>`;
+    }
+
+    function renderRewrite() {
+      const issues = (data.items || []).filter((it) => it.status === "issue" && it.suggested);
+      const el = document.getElementById("rewrite");
+      if (!issues.length) {
+        el.innerHTML = `<h2>可替换改写稿</h2><div class="empty">没有需要替换的文案</div>`;
+        return;
+      }
+      el.innerHTML = `<h2>可替换改写稿</h2>` + issues.map((it) =>
+        `<div class="rw"><span class="id">${it.id}</span><span class="from">${escapeHtml(it.original || "")}</span><span class="arrow">→</span><span class="to">${escapeHtml(it.suggested)}</span></div>`
+      ).join("");
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    document.getElementById("themeBtn").onclick = () => {
+      document.documentElement.classList.toggle("dark");
+    };
+
+    renderShot(); renderList(); renderDetail(); renderRewrite();
+  </script>
+</body>
+</html>
