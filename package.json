@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test:login": "node scripts/test_login_detect.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}
